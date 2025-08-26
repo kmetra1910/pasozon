@@ -1,0 +1,69 @@
+paths:
+  interactions: "data/raw/tracker/*.parquet"      # user-item events (views, add_to_cart, fav, purchase)
+  orders: "data/raw/orders/*.parquet"             # delivered/returned
+  items: "data/raw/items/*.parquet"               # catalog + attrs + clip
+  categories: "data/raw/categories/*.parquet"
+  test_users: "data/raw/test_users/*.parquet"
+  out_dir_interim: "data/interim"
+  out_dir_processed: "data/processed"
+  models_dir: "models"
+
+columns:
+  user_id: "user_id"
+  item_id: "item_id"
+  event_type: "event_type"        # e.g. view/cart/fav/purchase
+  ts: "ts"                        # timestamp (int or datetime)
+  delivered_flag: "delivered"     # in orders
+  category_id: "category_id"
+  brand: "brand"
+  price: "price"
+  clip: "clip_embedding"          # list/array[512]
+
+events_weights:
+  purchase: 3.0
+  cart: 1.5
+  fav: 1.2
+  view: 1.0
+
+time:
+  # укажите реальные границы по данным
+  train_start: "2024-01-01"
+  train_end:   "2024-05-31"
+  val_start:   "2024-06-01"
+  val_end:     "2024-06-15"
+  test_start:  "2024-06-16"
+  test_end:    "2024-06-30"
+  decay_half_life_days: 30
+
+candidates:
+  per_user_from_covis: 800
+  per_user_from_pop: 500
+  topk_per_anchor: 50
+  history_window_days: 60
+
+ranker:
+  params:
+    objective: "lambdarank"
+    metric: "ndcg"
+    eval_at: [100]
+    learning_rate: 0.05
+    num_leaves: 127
+    min_data_in_leaf: 50
+    feature_fraction: 0.8
+    lambda_l1: 0.0
+    lambda_l2: 0.0
+    max_depth: -1
+    random_state: 42
+
+blend:
+  rrf_k: 60     # RRF hyperparam
+
+diversity:
+  max_per_brand: 10
+  max_per_category: 20
+  mmr_lambda: 0.8  # 1.0 = только relevance, 0.0 = только diversity
+
+submission:
+  topk: 100
+  filename_val: "data/processed/submission_val.csv"
+  filename_test: "data/processed/submission_test.csv"
