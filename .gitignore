@@ -1,0 +1,17 @@
+
+# python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.ipynb_checkpoints/
+# data & artifacts
+data/interim/
+data/processed/
+models/
+*.parquet
+*.pkl
+*.bin
+# editors
+.vscode/
+.idea/

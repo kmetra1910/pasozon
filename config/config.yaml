@@ -1,22 +1,3 @@
-# Ozon RecSys — Trajectory B
-
-Pipeline: candidate generation (co-visitation + popularity) → feature engineering → LightGBM ranker (lambdarank) → RRF blend → diversity rerank → submission.
-
-## Quickstart
-```bash
-poetry install --no-root
-poetry run python -m recsys.build_candidates --config config/config.yaml
-poetry run python -m recsys.features --config config/config.yaml --stage val
-poetry run python -m recsys.train_lgbm_ranker --config config/config.yaml
-poetry run python -m recsys.blend_rrf --config config/config.yaml --stage val
-poetry run python -m recsys.rerank_diversity --config config/config.yaml --stage val
-poetry run python -m recsys.make_submission --config config/config.yaml --stage test
-```
-
-Все пути/колонки и temporal split настраиваются в config/config.yaml.
-
-#### `config/config.yaml`
-```yaml
 paths:
   interactions: "data/raw/tracker/*.parquet"      # user-item events (views, add_to_cart, fav, purchase)
   orders: "data/raw/orders/*.parquet"             # delivered/returned
@@ -86,4 +67,3 @@ submission:
   topk: 100
   filename_val: "data/processed/submission_val.csv"
   filename_test: "data/processed/submission_test.csv"
-```
